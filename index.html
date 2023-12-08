@@ -1,38 +1,72 @@
-import turtle
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>New Year Countdown</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+      color: black;
+    }
 
-def read_file(file_name):
-    with open(file_name, 'r') as file:
-        lines = [line.strip() for line in file.readlines()]
-    return lines
+    .countdown {
+      text-align: center;
+    }
 
-def draw_shapes(data):
-    turtle.setup(450, 450)
-    turtle.speed('fastest')
+    #timer {
+      font-size: 3em;
+    }
+  </style>
+</head>
+<body>
+  <div class="countdown">
+    <h1>Countdown to New Year</h1>
+    <p id="timer"></p>
+  </div>
 
-    pen = turtle.Turtle()
-    pen.penup()
+  <script>
+    function getTimeRemaining(endTime) {
+      const total = endTime - Date.now();
+      const seconds = Math.floor((total / 1000) % 60);
+      const minutes = Math.floor((total / 1000 / 60) % 60);
+      const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+      const days = Math.floor(total / (1000 * 60 * 60 * 24));
 
-    for line in data:
-        if line == 'stop':
-            pen.penup()
-        else:
-            values = line.split()
-            color = values[0]  # Assuming color is the first value
-            x, y = map(int, values[1:])  # Assuming the rest are x, y coordinates
-            pen.goto(x, y)
+      return {
+        total,
+        days,
+        hours,
+        minutes,
+        seconds
+      };
+    }
 
-            if color == 'black':  # Draw the turtle shape only if the color is black
-                pen.pendown()
-            else:
-                pen.penup()
+    function initializeClock(id, endTime) {
+      const clock = document.getElementById(id);
+      const timeinterval = setInterval(() => {
+        const t = getTimeRemaining(endTime);
 
-    turtle.done()
+        if (t.total <= 0) {
+          clearInterval(timeinterval);
+          clock.innerHTML = 'Happy New Year!';
+        } else {
+          clock.innerHTML = `${t.days} days ${t.hours} hours ${t.minutes} minutes ${t.seconds} seconds`;
+        }
+      }, 1000);
+    }
 
-def main():
-    file_name = input("Enter the name of the input file: ")
-    file_data = read_file(file_name)
-    draw_shapes(file_data)
-
-if __name__ == "__main__":
-    main()
- 
+    const currentYear = new Date().getFullYear();
+    const nextYear = currentYear + 1;
+    const deadline = new Date(`January 1, ${nextYear} 00:00:00`).getTime(); // Next New Year's Eve
+    initializeClock('timer', deadline);
+  </script>
+</body>
+</html>
